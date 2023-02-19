@@ -34,6 +34,12 @@ public class AccountControllerImpl implements AccountController {
     }
 
     @Override
+    public ResponseEntity<AccountResponse> update(AccountRequest request, Long id) {
+        var accountResponse = accountService.update(request, id);
+        return ResponseEntity.ok(accountResponse);
+    }
+
+    @Override
     public ResponseEntity<Void> delete(Long id) {
         accountService.delete(id);
         return ResponseEntity.noContent().build();

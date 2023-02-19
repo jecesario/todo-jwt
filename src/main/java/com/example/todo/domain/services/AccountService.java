@@ -11,4 +11,6 @@ public interface AccountService {
     AccountResponse create(AccountRequest request);
 
     void delete(Long id);
+
+    AccountResponse update(AccountRequest request, Long id);
 }

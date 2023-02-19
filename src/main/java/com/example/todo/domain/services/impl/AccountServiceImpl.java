@@ -3,6 +3,7 @@ package com.example.todo.domain.services.impl;
 import com.example.todo.domain.models.Account;
 import com.example.todo.domain.repositories.AccountRepository;
 import com.example.todo.domain.services.AccountService;
+import com.example.todo.exceptions.BadRequestException;
 import com.example.todo.exceptions.Issue;
 import com.example.todo.exceptions.IssueEnum;
 import com.example.todo.exceptions.ObjectNotFoundException;
@@ -52,9 +53,40 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.deleteById(id);
     }
 
+    @Override
+    public AccountResponse update(AccountRequest request, Long id) {
+
+        var account = findById(id);
+
+        if(emailExists(request.getEmail()) && !account.getEmail().equalsIgnoreCase(request.getEmail())) {
+            throw new BadRequestException(
+                    new Issue(IssueEnum.ARGUMENT_NOT_VALID, List.of(String.format("The email: %s is in use", request.getEmail())))
+            );
+        }
+
+        account.setName(request.getName());
+        account.setEmail(request.getEmail());
+        account.setPassword(request.getPassword());
+
+        var accountPersisted = accountRepository.save(account);
+
+        return AccountResponse
+                .builder()
+                .withId(accountPersisted.getId())
+                .withName(accountPersisted.getName())
+                .withEmail(accountPersisted.getEmail())
+                .build();
+    }
+
     private Account findById(Long id) {
-        return accountRepository.findById(id).orElseThrow(() ->
-                new ObjectNotFoundException(
-                        new Issue(IssueEnum.OBJECT_NOT_FOUND, List.of(String.format("Account with id: %s not found", id)))));
+        return accountRepository.findById(id)
+                .orElseThrow(() ->
+                    new ObjectNotFoundException(
+                            new Issue(IssueEnum.OBJECT_NOT_FOUND, List.of(String.format("Account with id: %s not found", id)))
+                    ));
+    }
+
+    private boolean emailExists(String email) {
+        return accountRepository.findByEmail(email).isPresent();
     }
 }

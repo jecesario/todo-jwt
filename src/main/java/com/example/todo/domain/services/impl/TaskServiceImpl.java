@@ -3,6 +3,9 @@ package com.example.todo.domain.services.impl;
 import com.example.todo.domain.models.Task;
 import com.example.todo.domain.repositories.TaskRepository;
 import com.example.todo.domain.services.TaskService;
+import com.example.todo.exceptions.Issue;
+import com.example.todo.exceptions.IssueEnum;
+import com.example.todo.exceptions.ObjectNotFoundException;
 import com.example.todo.rest.vo.CreateTaskRequest;
 import com.example.todo.rest.vo.TaskResponse;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,7 @@ public class TaskServiceImpl implements TaskService {
     public TaskServiceImpl(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
     }
+
 
     @Override
     public List<Task> findAll() {
@@ -40,5 +44,19 @@ public class TaskServiceImpl implements TaskService {
                 .withTitle(persistedTask.getTitle())
                 .withStatus(persistedTask.getStatus())
                 .build();
+    }
+
+    @Override
+    public void delete(Long id) {
+        findById(id);
+        taskRepository.deleteById(id);
+    }
+
+    private Task findById(Long id) {
+        return taskRepository.findById(id)
+                .orElseThrow(()->
+                        new ObjectNotFoundException(
+                                new Issue(IssueEnum.OBJECT_NOT_FOUND, List.of(String.format("Task with id: %s not found", id)))
+                        ));
     }
 }

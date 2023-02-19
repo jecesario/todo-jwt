@@ -10,4 +10,6 @@ public interface TaskService {
     List<Task> findAll();
 
     TaskResponse create(CreateTaskRequest request);
+
+    void delete(Long id);
 }

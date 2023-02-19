@@ -32,4 +32,10 @@ public class TaskControllerImpl implements TaskController {
         var taskResponse = taskService.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(taskResponse);
     }
+
+    @Override
+    public ResponseEntity<Void> delete(Long id) {
+        taskService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }

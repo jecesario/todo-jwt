@@ -33,4 +33,10 @@ public class AccountControllerImpl implements AccountController {
         return ResponseEntity.status(HttpStatus.CREATED).body(accountResponse);
     }
 
+    @Override
+    public ResponseEntity<Void> delete(Long id) {
+        accountService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

@@ -2,6 +2,7 @@ package com.example.todo.rest.exceptions;
 
 import com.example.todo.exceptions.Issue;
 import com.example.todo.exceptions.IssueEnum;
+import com.example.todo.exceptions.ObjectNotFoundException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -28,5 +29,11 @@ public class GlobalExceptionHandler {
     public Issue handlerHttpMessageNotReadableException(HttpMessageNotReadableException e) {
         var message = Arrays.stream(e.getMessage().split(":")).findFirst().orElse("Required request body is missing");
         return new Issue(IssueEnum.ARGUMENT_NOT_VALID, List.of(message));
+    }
+
+    @ExceptionHandler(ObjectNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Issue handlerObjectNotFoundException(ObjectNotFoundException e) {
+        return e.getIssue();
     }
 }

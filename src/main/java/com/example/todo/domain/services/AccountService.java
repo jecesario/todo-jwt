@@ -9,4 +9,6 @@ import java.util.List;
 public interface AccountService {
     List<Account> findAll();
     AccountResponse create(AccountRequest request);
+
+    void delete(Long id);
 }

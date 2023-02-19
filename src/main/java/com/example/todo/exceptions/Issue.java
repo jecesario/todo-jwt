@@ -6,7 +6,6 @@ import java.util.List;
 
 @Getter
 public class Issue {
-
     private final String message;
     private final List<Object> details;
 

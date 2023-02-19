@@ -3,6 +3,9 @@ package com.example.todo.domain.services.impl;
 import com.example.todo.domain.models.Account;
 import com.example.todo.domain.repositories.AccountRepository;
 import com.example.todo.domain.services.AccountService;
+import com.example.todo.exceptions.Issue;
+import com.example.todo.exceptions.IssueEnum;
+import com.example.todo.exceptions.ObjectNotFoundException;
 import com.example.todo.rest.vo.AccountRequest;
 import com.example.todo.rest.vo.AccountResponse;
 import org.springframework.stereotype.Service;
@@ -41,5 +44,17 @@ public class AccountServiceImpl implements AccountService {
                 .withName(accountPersisted.getName())
                 .withEmail(accountPersisted.getEmail())
                 .build();
+    }
+
+    @Override
+    public void delete(Long id) {
+        findById(id);
+        accountRepository.deleteById(id);
+    }
+
+    private Account findById(Long id) {
+        return accountRepository.findById(id).orElseThrow(() ->
+                new ObjectNotFoundException(
+                        new Issue(IssueEnum.OBJECT_NOT_FOUND, List.of(String.format("Account with id: %s not found", id)))));
     }
 }

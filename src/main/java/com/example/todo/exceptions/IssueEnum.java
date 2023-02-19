@@ -1,7 +1,8 @@
 package com.example.todo.exceptions;
 
 public enum IssueEnum {
-    ARGUMENT_NOT_VALID("An error has occurred while validate the request body");
+    ARGUMENT_NOT_VALID("An error has occurred while validate the request body"),
+    OBJECT_NOT_FOUND("The request object cannot be found in database");
 
     private final String message;
 

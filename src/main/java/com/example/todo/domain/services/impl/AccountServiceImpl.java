@@ -30,6 +30,12 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountResponse create(AccountRequest request) {
 
+        if(emailExists(request.getEmail())) {
+            throw new BadRequestException(
+                    new Issue(IssueEnum.ARGUMENT_NOT_VALID, List.of(String.format("The email '%s' is in use", request.getEmail())))
+            );
+        }
+
         var account = Account
                 .builder()
                 .withName(request.getName())
@@ -60,7 +66,7 @@ public class AccountServiceImpl implements AccountService {
 
         if(emailExists(request.getEmail()) && !account.getEmail().equalsIgnoreCase(request.getEmail())) {
             throw new BadRequestException(
-                    new Issue(IssueEnum.ARGUMENT_NOT_VALID, List.of(String.format("The email: %s is in use", request.getEmail())))
+                    new Issue(IssueEnum.ARGUMENT_NOT_VALID, List.of(String.format("The email '%s' is in use", request.getEmail())))
             );
         }
 

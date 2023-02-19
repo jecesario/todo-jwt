@@ -3,6 +3,7 @@ package com.example.todo.rest.controller;
 import com.example.todo.domain.models.Account;
 import com.example.todo.rest.vo.AccountRequest;
 import com.example.todo.rest.vo.AccountResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,5 +17,5 @@ public interface AccountController {
     ResponseEntity<List<Account>> findAll();
 
     @PostMapping
-    ResponseEntity<AccountResponse> create(@RequestBody AccountRequest request);
+    ResponseEntity<AccountResponse> create(@RequestBody @Valid AccountRequest request);
 }

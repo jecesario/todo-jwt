@@ -11,11 +11,11 @@ import lombok.Data;
 @Builder(setterPrefix = "with")
 public class AccountRequest {
 
-    @NotBlank
+    @NotBlank(message = "The 'name' field is required")
     private String name;
-    @NotBlank
-    @Email
+    @NotBlank(message = "The 'email' field is required")
+    @Email(message = "The 'email' must be a valid email")
     private String email;
-    @NotBlank
+    @NotBlank(message = "The 'password' field is required")
     private String password;
 }

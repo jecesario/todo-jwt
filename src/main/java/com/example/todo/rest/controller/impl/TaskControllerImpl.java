@@ -3,7 +3,7 @@ package com.example.todo.rest.controller.impl;
 import com.example.todo.domain.models.Task;
 import com.example.todo.domain.services.TaskService;
 import com.example.todo.rest.controller.TaskController;
-import com.example.todo.rest.vo.CreateTaskRequest;
+import com.example.todo.rest.vo.TaskRequest;
 import com.example.todo.rest.vo.TaskResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +28,21 @@ public class TaskControllerImpl implements TaskController {
     }
 
     @Override
-    public ResponseEntity<TaskResponse> create(CreateTaskRequest request) {
+    public ResponseEntity<TaskResponse> create(TaskRequest request) {
         var taskResponse = taskService.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(taskResponse);
+    }
+
+    @Override
+    public ResponseEntity<TaskResponse> update(TaskRequest request, Long id) {
+        var taskResponse = taskService.update(request, id);
+        return ResponseEntity.ok(taskResponse);
+    }
+
+    @Override
+    public ResponseEntity<TaskResponse> toggle(Long id) {
+        var taskResponse = taskService.toggle(id);
+        return ResponseEntity.ok(taskResponse);
     }
 
     @Override

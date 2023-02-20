@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(setterPrefix = "with")
-public class CreateTaskRequest {
+public class TaskRequest {
     @NotBlank(message = "The 'title' field is required")
     private String title;
 }

@@ -6,7 +6,7 @@ import com.example.todo.domain.services.TaskService;
 import com.example.todo.exceptions.Issue;
 import com.example.todo.exceptions.IssueEnum;
 import com.example.todo.exceptions.ObjectNotFoundException;
-import com.example.todo.rest.vo.CreateTaskRequest;
+import com.example.todo.rest.vo.TaskRequest;
 import com.example.todo.rest.vo.TaskResponse;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +28,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskResponse create(CreateTaskRequest request) {
+    public TaskResponse create(TaskRequest request) {
 
         var task = Task
                 .builder()
@@ -50,6 +50,38 @@ public class TaskServiceImpl implements TaskService {
     public void delete(Long id) {
         findById(id);
         taskRepository.deleteById(id);
+    }
+
+    @Override
+    public TaskResponse update(TaskRequest request, Long id) {
+
+        var task = findById(id);
+        task.setTitle(request.getTitle());
+
+        var persistedTask = taskRepository.save(task);
+
+        return TaskResponse
+                .builder()
+                .withId(persistedTask.getId())
+                .withTitle(persistedTask.getTitle())
+                .withStatus(persistedTask.getStatus())
+                .build();
+    }
+
+    @Override
+    public TaskResponse toggle(Long id) {
+
+        var task = findById(id);
+        task.setStatus(!task.getStatus());
+
+        var persistedTask = taskRepository.save(task);
+
+        return TaskResponse
+                .builder()
+                .withId(persistedTask.getId())
+                .withTitle(persistedTask.getTitle())
+                .withStatus(persistedTask.getStatus())
+                .build();
     }
 
     private Task findById(Long id) {

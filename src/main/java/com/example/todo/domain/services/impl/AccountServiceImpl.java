@@ -9,10 +9,12 @@ import com.example.todo.exceptions.IssueEnum;
 import com.example.todo.exceptions.ObjectNotFoundException;
 import com.example.todo.rest.vo.AccountRequest;
 import com.example.todo.rest.vo.AccountResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class AccountServiceImpl implements AccountService {
 
@@ -24,11 +26,14 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<Account> findAll() {
+        log.info("Finding all accounts");
         return accountRepository.findAll();
     }
 
     @Override
     public AccountResponse create(AccountRequest request) {
+
+        log.info("Starts create account");
 
         if(emailExists(request.getEmail())) {
             throw new BadRequestException(
@@ -45,6 +50,7 @@ public class AccountServiceImpl implements AccountService {
 
         var accountPersisted = accountRepository.save(account);
 
+        log.info("Account saved");
         return AccountResponse
                 .builder()
                 .withId(accountPersisted.getId())
@@ -55,12 +61,16 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void delete(Long id) {
+        log.info("Starts delete account: {}", id);
         findById(id);
         accountRepository.deleteById(id);
+        log.info("Account: {} deleted", id);
     }
 
     @Override
     public AccountResponse update(AccountRequest request, Long id) {
+
+        log.info("Starts update account: {}", id);
 
         var account = findById(id);
 
@@ -76,6 +86,8 @@ public class AccountServiceImpl implements AccountService {
 
         var accountPersisted = accountRepository.save(account);
 
+        log.info("Account: {} updated", id);
+
         return AccountResponse
                 .builder()
                 .withId(accountPersisted.getId())
@@ -85,6 +97,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     private Account findById(Long id) {
+        log.info("Finding account: {} in database", id);
         return accountRepository.findById(id)
                 .orElseThrow(() ->
                     new ObjectNotFoundException(
@@ -93,6 +106,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     private boolean emailExists(String email) {
+        log.info("Verifying if email is in use");
         return accountRepository.findByEmail(email).isPresent();
     }
 }

@@ -10,19 +10,28 @@ import com.example.todo.exceptions.ObjectNotFoundException;
 import com.example.todo.rest.vo.AccountRequest;
 import com.example.todo.rest.vo.AccountResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Slf4j
 @Service
-public class AccountServiceImpl implements AccountService {
+public class AccountServiceImpl implements AccountService, UserDetailsService {
 
     private final AccountRepository accountRepository;
 
-    public AccountServiceImpl(AccountRepository accountRepository) {
+    private final PasswordEncoder passwordEncoder;
+
+    public AccountServiceImpl(AccountRepository accountRepository, PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
+        this.passwordEncoder = passwordEncoder;
     }
+
 
     @Override
     public List<Account> findAll() {
@@ -45,7 +54,7 @@ public class AccountServiceImpl implements AccountService {
                 .builder()
                 .withName(request.getName())
                 .withEmail(request.getEmail())
-                .withPassword(request.getPassword())
+                .withPassword(passwordEncoder.encode(request.getPassword()))
                 .build();
 
         var accountPersisted = accountRepository.save(account);
@@ -82,7 +91,7 @@ public class AccountServiceImpl implements AccountService {
 
         account.setName(request.getName());
         account.setEmail(request.getEmail());
-        account.setPassword(request.getPassword());
+        account.setPassword(passwordEncoder.encode(request.getPassword()));
 
         var accountPersisted = accountRepository.save(account);
 
@@ -94,6 +103,19 @@ public class AccountServiceImpl implements AccountService {
                 .withName(accountPersisted.getName())
                 .withEmail(accountPersisted.getEmail())
                 .build();
+    }
+
+    @Override
+    public UserDetails auth(Account account) {
+        var userDetails = loadUserByUsername(account.getEmail());
+        var passwordMatches = passwordEncoder.matches(account.getPassword(), userDetails.getPassword());
+
+        if(passwordMatches) {
+            return userDetails;
+        }
+        throw new BadRequestException(
+                new Issue(IssueEnum.HEADER_REQUIRED_ERROR, "An error has occurred while authenticate account")
+        );
     }
 
     private Account findById(Long id) {
@@ -108,5 +130,21 @@ public class AccountServiceImpl implements AccountService {
     private boolean emailExists(String email) {
         log.info("Verifying if email is in use");
         return accountRepository.findByEmail(email).isPresent();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+
+        var account = accountRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ObjectNotFoundException(
+                                new Issue(IssueEnum.OBJECT_NOT_FOUND, List.of(String.format("Account with email '%s' not found", email)))
+                        ));
+
+        return User
+                .builder()
+                .username(account.getEmail())
+                .password(account.getPassword())
+                .build();
     }
 }

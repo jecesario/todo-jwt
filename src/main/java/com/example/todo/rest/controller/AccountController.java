@@ -3,6 +3,8 @@ package com.example.todo.rest.controller;
 import com.example.todo.domain.models.Account;
 import com.example.todo.rest.vo.AccountRequest;
 import com.example.todo.rest.vo.AccountResponse;
+import com.example.todo.rest.vo.CredentialsRequest;
+import com.example.todo.rest.vo.JwtTokenResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,4 +29,7 @@ public interface AccountController {
 
     @DeleteMapping(value = "/{id}")
     ResponseEntity<Void> delete(@PathVariable Long id);
+
+    @PostMapping(value = "/auth")
+    JwtTokenResponse auth(@RequestBody @Valid CredentialsRequest request);
 }

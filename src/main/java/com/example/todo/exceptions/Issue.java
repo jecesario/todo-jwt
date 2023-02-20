@@ -13,4 +13,9 @@ public class Issue {
         this.message = issueEnum.getMessage();
         this.details = details;
     }
+
+    public Issue(IssueEnum issueEnum, Object details) {
+        this.message = issueEnum.getMessage();
+        this.details = List.of(details);
+    }
 }

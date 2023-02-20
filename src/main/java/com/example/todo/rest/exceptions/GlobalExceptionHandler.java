@@ -1,6 +1,7 @@
 package com.example.todo.rest.exceptions;
 
 import com.example.todo.exceptions.BadRequestException;
+import com.example.todo.exceptions.InvalidJwtException;
 import com.example.todo.exceptions.Issue;
 import com.example.todo.exceptions.IssueEnum;
 import com.example.todo.exceptions.ObjectNotFoundException;
@@ -49,6 +50,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Issue handlerBadRequestException(BadRequestException e) {
+        log.error(e.getIssue().getMessage(), e);
+        return e.getIssue();
+    }
+
+    @ExceptionHandler(InvalidJwtException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public Issue handlerInvalidJwtException(InvalidJwtException e) {
         log.error(e.getIssue().getMessage(), e);
         return e.getIssue();
     }

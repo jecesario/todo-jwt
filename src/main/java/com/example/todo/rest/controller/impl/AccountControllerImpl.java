@@ -31,7 +31,7 @@ public class AccountControllerImpl implements AccountController {
     }
 
     @Override
-    public ResponseEntity<List<Account>> findAll() {
+    public ResponseEntity<List<AccountResponse>> findAll() {
         return ResponseEntity.ok(accountService.findAll());
     }
 

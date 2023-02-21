@@ -1,6 +1,5 @@
 package com.example.todo.rest.controller;
 
-import com.example.todo.domain.models.Account;
 import com.example.todo.rest.vo.AccountRequest;
 import com.example.todo.rest.vo.AccountResponse;
 import com.example.todo.rest.vo.CredentialsRequest;
@@ -19,7 +18,7 @@ import java.util.List;
 
 public interface AccountController {
     @GetMapping
-    ResponseEntity<List<Account>> findAll();
+    ResponseEntity<List<AccountResponse>> findAll();
 
     @PostMapping
     ResponseEntity<AccountResponse> create(@RequestBody @Valid AccountRequest request);

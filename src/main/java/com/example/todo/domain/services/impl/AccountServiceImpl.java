@@ -34,9 +34,16 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
 
 
     @Override
-    public List<Account> findAll() {
+    public List<AccountResponse> findAll() {
         log.info("Finding all accounts");
-        return accountRepository.findAll();
+        List<Account> accounts = accountRepository.findAll();
+
+        return accounts.stream().map(account -> AccountResponse
+                    .builder()
+                    .withId(account.getId())
+                    .withName(account.getName())
+                    .withEmail(account.getEmail())
+                    .build()).toList();
     }
 
     @Override

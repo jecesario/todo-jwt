@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.List;
 
 public interface AccountService {
-    List<Account> findAll();
+    List<AccountResponse> findAll();
     AccountResponse create(AccountRequest request);
 
     void delete(Long id);

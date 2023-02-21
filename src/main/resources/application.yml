@@ -17,5 +17,5 @@ logging:
 
 security:
   jwt:
-    expiration: 999999
+    expiration: 60
     signKey: ${JWT_SIGN_KEY:31d6cfe0d16ae931b73c59d7e0c089c0}

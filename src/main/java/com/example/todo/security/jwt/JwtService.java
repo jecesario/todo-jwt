@@ -23,7 +23,7 @@ public class JwtService {
 
     public String generateToken(Account account) {
         var exp = Long.parseLong(this.expiration);
-        var dateTimeExpiration = LocalDateTime.now().plusYears(exp);
+        var dateTimeExpiration = LocalDateTime.now().plusMinutes(exp);
         var instant = dateTimeExpiration.atZone(ZoneId.systemDefault()).toInstant();
         var date = from(instant);
 
@@ -31,7 +31,7 @@ public class JwtService {
                 .builder()
                 .setSubject(account.getEmail())
                 .setExpiration(date)
-                .signWith(SignatureAlgorithm.ES512, this.signKey)
+                .signWith(SignatureAlgorithm.HS512, this.signKey)
                 .compact();
     }
 

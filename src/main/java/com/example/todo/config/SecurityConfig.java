@@ -5,6 +5,8 @@ import com.example.todo.security.jwt.JwtAuthFilter;
 import com.example.todo.security.jwt.JwtService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -22,7 +24,7 @@ public class SecurityConfig {
 
     private final JwtService jwtService;
 
-    public SecurityConfig(AccountServiceImpl accountService, JwtService jwtService) {
+    public SecurityConfig(@Lazy AccountServiceImpl accountService, JwtService jwtService) {
         this.accountService = accountService;
         this.jwtService = jwtService;
     }
@@ -41,8 +43,12 @@ public class SecurityConfig {
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf().disable()
-                .authorizeHttpRequests().requestMatchers("/account/**")
-                    .permitAll()
+                .authorizeHttpRequests()
+                    .requestMatchers(HttpMethod.POST,"/account")
+                        .permitAll()
+                    .requestMatchers(HttpMethod.POST,"/account/auth")
+                        .permitAll()
+                    .anyRequest().authenticated()
                 .and()
                     .sessionManagement()
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

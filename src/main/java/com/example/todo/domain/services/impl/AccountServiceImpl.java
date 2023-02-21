@@ -145,6 +145,7 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
                 .builder()
                 .username(account.getEmail())
                 .password(account.getPassword())
+                .roles("USER")
                 .build();
     }
 }
